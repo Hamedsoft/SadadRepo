@@ -1,0 +1,4 @@
+﻿.number-format {
+    direction: rtl;
+    unicode-bidi: bidi-override;
+}
