@@ -17,7 +17,11 @@ namespace UI.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public IActionResult Index()
+        public IActionResult Products()
+        {
+            return View();
+        }
+        public IActionResult Orders()
         {
             return View();
         }
