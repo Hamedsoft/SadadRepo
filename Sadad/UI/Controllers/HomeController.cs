@@ -25,5 +25,16 @@ namespace UI.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult CommitOrder()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public void AddToOrder(int ProductId)
+        {
+            //
+        }
     }
 }

@@ -109,10 +109,12 @@
                 </div>
             </div>
             <div class="card-footer">
-                <div class="btn-list">
-                    <button type="button" class="btn btn-success">تکمیل فرایند</button>
-                    <a class="btn btn-secondary" asp-area="" asp-controller="Home" asp-action="products">بازگشت به انتخاب محصول</a>
-                </div>
+                <form asp-controller="Home" asp-action="CommitOrder" method="post">
+                    <div class="btn-list">
+                        <button type="submit" method="post" class="btn btn-success">تکمیل فرایند</button>
+                        <a class="btn btn-secondary" asp-area="" asp-controller="Home" asp-action="products">بازگشت به انتخاب محصول</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
