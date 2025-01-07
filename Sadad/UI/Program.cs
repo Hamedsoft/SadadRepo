@@ -1,4 +1,9 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
+
+// Change IoC to Autofac
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -22,6 +27,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Products}/{id?}");
 
 app.Run();
