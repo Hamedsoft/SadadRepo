@@ -1,20 +1,41 @@
-using Autofac;
+﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
+using UI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Change IoC to Autofac
+// تغییر IoC به Autofac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
+{
+    // ثبت HttpClient به عنوان Singleton
+    builder.Register(c =>
+    {
+        var client = new HttpClient
+        {
+            BaseAddress = new Uri("https://localhost:7064/api/")
+        };
+        return client;
+    }).SingleInstance();
+});
 
-// Add services to the container.
+// ثبت سرویس‌های MVC
 builder.Services.AddControllersWithViews();
+
+// toset
+builder.Services.AddNotyf(config => { config.DurationInSeconds = 3; config.IsDismissable = true; config.Position = NotyfPosition.BottomLeft; });
+
+// ثبت سرویس OrderService
+builder.Services.AddTransient<IOrderService, OrderService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// تنظیمات مربوط به درخواست‌های HTTP
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -22,6 +43,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseNotyf();
 
 app.UseAuthorization();
 
