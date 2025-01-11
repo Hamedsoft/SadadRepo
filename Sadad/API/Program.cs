@@ -1,8 +1,8 @@
-using API.Data;
-using API.Repositories;
-using API.Services;
+using Application.Services;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Infrastructure.Data;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +17,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 // Services DI
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
 
 // Add services to the container.
 builder.Services.AddControllers();

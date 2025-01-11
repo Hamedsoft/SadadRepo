@@ -1,5 +1,5 @@
-﻿using API.DTOs;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Shared.DTOs;
 using System.Text;
 
 namespace UI.Services

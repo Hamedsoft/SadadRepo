@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using API.DTOs;
-using API.Models;
-using API.Repositories;
-using API.Services;
+using Shared.DTOs;
+using Application.Services;
+using Domain.Entities;
 
 namespace API.Controllers
 {

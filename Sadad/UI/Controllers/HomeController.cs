@@ -1,12 +1,10 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
-using API.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Text;
 using UI.Models;
 using UI.Services;
-using API.Models;
 
 namespace UI.Controllers
 {
