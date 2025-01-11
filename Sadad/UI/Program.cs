@@ -2,6 +2,8 @@
 using Autofac.Extensions.DependencyInjection;
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
+using UI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // تغییر IoC به Autofac
@@ -24,6 +26,9 @@ builder.Services.AddControllersWithViews();
 
 // toset
 builder.Services.AddNotyf(config => { config.DurationInSeconds = 3; config.IsDismissable = true; config.Position = NotyfPosition.BottomLeft; });
+
+// ثبت سرویس OrderService
+builder.Services.AddTransient<IOrderService, OrderService>();
 
 var app = builder.Build();
 

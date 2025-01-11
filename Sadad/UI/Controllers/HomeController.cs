@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Text;
 using UI.Models;
+using UI.Services;
 
 namespace UI.Controllers
 {
@@ -12,13 +13,15 @@ namespace UI.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly HttpClient _httpClient;
+        private readonly IOrderService _orderService;
         INotyfService _NotyfService;
 
-        public HomeController(ILogger<HomeController> logger, HttpClient httpClient, INotyfService notyfService)
+        public HomeController(ILogger<HomeController> logger, HttpClient httpClient, INotyfService notyfService, IOrderService orderService)
         {
             _logger = logger;
             _httpClient = httpClient;
             _NotyfService = notyfService;
+            _orderService = orderService;
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
