@@ -5,6 +5,7 @@ using Application.Queries.Orders.GetOrderById;
 using MediatR;
 using Application.Interfaces;
 using Application.Queries.Orders.GetAllOrders;
+using Application.Queries.Orders.GetOrderGroupItems;
 
 namespace API.Controllers
 {
@@ -119,13 +120,26 @@ namespace API.Controllers
         }
         
         [HttpGet]
-        [Route("GetOrderGroupItems/{CustomerId}")]
-        public async Task<IActionResult> GetOrderGroupItems(int CustomerId = 1)
+        [Route("GetOrderGroupItemsNormal/{CustomerId}")] //Remove This
+        public async Task<IActionResult> GetOrderGroupItemsNormal(int CustomerId = 1)
         {
             var OrderItems = await _orderService.GetOrderItemsGroupAsync(CustomerId);
             return Ok(OrderItems);
         }
-        
+
+        [HttpGet]
+        [Route("GetOrderGroupItems/{CustomerId}")] //Fixed for CQRS
+        public async Task<IActionResult> GetOrderGroupItems(int CustomerId = 1)
+        {
+            var query = new GetOrderGroupItemsQuery(CustomerId);  // ساختن یک Query
+            var response = await _mediator.Send(query);  // ارسال Query از طریق MediatR
+
+            if (response == null)
+                return NotFound();
+
+            return Ok(response);
+        }
+
         [HttpGet]
         [Route("GetProducts")]
         public async Task<IActionResult> GetProducts()
