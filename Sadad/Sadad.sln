@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{20191EEC-2A6F-4081-9FAF-4285A801D857}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{AF302BBB-68F7-4D21-9050-2E0354D614F2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{20191EEC-2A6F-4081-9FAF-4285A801D857}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20191EEC-2A6F-4081-9FAF-4285A801D857}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20191EEC-2A6F-4081-9FAF-4285A801D857}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AF302BBB-68F7-4D21-9050-2E0354D614F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AF302BBB-68F7-4D21-9050-2E0354D614F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF302BBB-68F7-4D21-9050-2E0354D614F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AF302BBB-68F7-4D21-9050-2E0354D614F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

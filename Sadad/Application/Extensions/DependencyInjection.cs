@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Contracts.Repositories;
-using Contracts.Services;
+using Application.Interfaces;
+using Application.Services;
 
 namespace Application.Extensions
 {

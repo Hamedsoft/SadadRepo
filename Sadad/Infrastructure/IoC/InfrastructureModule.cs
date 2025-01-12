@@ -1,8 +1,8 @@
 ﻿using Autofac;
-using Contracts.Repositories;
-using Contracts.Services;
+using Application.Interfaces;
 using Infrastructure.Repositories;
 using Module = Autofac.Module;
+using Application.Services;
 
 namespace Infrastructure.IoC
 {

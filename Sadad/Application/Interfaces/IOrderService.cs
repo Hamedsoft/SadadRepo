@@ -1,16 +1,16 @@
-﻿using Domain.Entities;
-using Shared.DTOs;
+﻿using Shared.DTOs;
+using Domain.Entities;
 
-namespace Contracts.Repositories
+namespace Application.Interfaces
 {
-    public interface IOrderRepository
+    public interface IOrderService
     {
         #region Post Interfaces
         Task AddOrderAsync(Order order);
         Task AddOrderItemAsync(OrderItem orderitem);
         #endregion
         #region Get Interfaces
-        Task<IEnumerable<Order>> GetAllOrdersAsync();
+        Task<IEnumerable<Order>> GetOrdersAsync();
         Task<OrderListDto> GetOrderItemsAsync(int OrderId);
         Task<IEnumerable<ProductDto>> GetAllProductAsync();
         Task<ProductDto> GetProductAsync(int ProductId);
@@ -23,5 +23,6 @@ namespace Contracts.Repositories
         #region Update Interfaces
         Task CommitOrder(int OrderId);
         #endregion
+
     }
 }

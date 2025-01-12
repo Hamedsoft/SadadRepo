@@ -1,9 +1,9 @@
-﻿using Contracts.Repositories;
+﻿using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs;
-using System.Linq;
+
 
 namespace Infrastructure.Repositories
 {

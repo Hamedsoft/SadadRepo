@@ -1,4 +1,4 @@
-﻿using Contracts.Repositories;
+﻿using Application.Interfaces;
 using MediatR;
 using Shared.DTOs;
 

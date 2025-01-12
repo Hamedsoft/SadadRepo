@@ -1,8 +1,8 @@
-﻿using Contracts.Repositories;
+﻿using Application.Interfaces;
 using Domain.Entities;
 using Shared.DTOs;
 
-namespace Contracts.Services
+namespace Application.Services
 {
     public class OrderService : IOrderService
     {

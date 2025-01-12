@@ -3,7 +3,7 @@ using Shared.DTOs;
 using Domain.Entities;
 using Application.Queries.Orders.GetOrderById;
 using MediatR;
-using Contracts.Repositories;
+using Application.Interfaces;
 
 namespace API.Controllers
 {

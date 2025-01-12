@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
-using Contracts.Repositories;
+using Application.Interfaces;
 
 namespace Infrastructure.Extensions
 {
