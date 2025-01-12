@@ -6,6 +6,8 @@ using MediatR;
 using Application.Interfaces;
 using Application.Queries.Orders.GetAllOrders;
 using Application.Queries.Orders.GetOrderGroupItems;
+using Application.Queries.Orders.GetProducts;
+using Application.Queries.Orders.GetLastOpenOrderItems;
 
 namespace API.Controllers
 {
@@ -141,23 +143,49 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("GetProducts")]
-        public async Task<IActionResult> GetProducts()
+        [Route("GetProductsNormal")] //Remove This
+        public async Task<IActionResult> GetProductsNormal()
         {
             var products = await _orderService.GetAllProductAsync();
             return Ok(products);
         }
-        
+
         [HttpGet]
-        [Route("GetLastOpenOrderItems/{CustomerId}")]
-        public async Task<IActionResult> GetLastOpenOrderItems(int CustomerId = 1)
+        [Route("GetProducts")] //Fixed for CQRS
+        public async Task<IActionResult> GetProducts()
+        {
+            var query = new GetProductsQuery();  // ساختن یک Query
+            var response = await _mediator.Send(query);  // ارسال Query از طریق MediatR
+
+            if (response == null)
+                return NotFound();
+
+            return Ok(response);
+        }
+
+        [HttpGet] //Remove This
+        [Route("GetLastOpenOrderItemsNormal/{CustomerId}")]
+        public async Task<IActionResult> GetLastOpenOrderItemsNormal(int CustomerId = 1)
         {
             var products = await _orderService.GetLastOpenOrderItemsAsync(CustomerId);
             return Ok(products);
         }
+
+        [HttpGet] //Fixed for CQRS
+        [Route("GetLastOpenOrderItems/{CustomerId}")]
+        public async Task<IActionResult> GetLastOpenOrderItems(int CustomerId = 1)
+        {
+            var query = new GetLastOpenOrderItemsQuery(CustomerId);  // ساختن یک Query
+            var response = await _mediator.Send(query);  // ارسال Query از طریق MediatR
+
+            if (response == null)
+                return NotFound();
+
+            return Ok(response);
+        }
         #endregion
         #region Delete Methods
-        
+
         [HttpDelete]
         [Route("RemoveOrderItems")]
         public async Task<IActionResult> RemoveOrderItemAsync([FromBody] DeleteOrderItemDto orderItem)
