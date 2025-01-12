@@ -1,27 +1,32 @@
-using Application.Services;
+using Application.Extensions;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Infrastructure.Data;
-using Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
+using Infrastructure.Extensions;
+using Infrastructure.IoC;
+using MediatR;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Change IoC to Autofac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
-// Database Connection
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Register Application & Infrastructure Services
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructure(connectionString);
 
-// Services DI
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IOrderService, OrderService>();
+// MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 
+// Configure Autofac Module
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+{
+    containerBuilder.RegisterModule(new InfrastructureModule());
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -36,9 +41,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

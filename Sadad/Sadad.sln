@@ -7,13 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UI", "UI\UI.csproj", "{7886
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{4BDCD87E-23AB-488E-A1F1-00559B76806F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{72441E32-5009-4D06-A6F9-BB5EB45F4FD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{72441E32-5009-4D06-A6F9-BB5EB45F4FD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{1CB30BAF-C984-48C2-8F93-3C18D6495432}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{1CB30BAF-C984-48C2-8F93-3C18D6495432}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{86A37BC1-57C4-4205-BFED-F3E4AD1CF706}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{86A37BC1-57C4-4205-BFED-F3E4AD1CF706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{20191EEC-2A6F-4081-9FAF-4285A801D857}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{20191EEC-2A6F-4081-9FAF-4285A801D857}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{AF302BBB-68F7-4D21-9050-2E0354D614F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{20191EEC-2A6F-4081-9FAF-4285A801D857}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20191EEC-2A6F-4081-9FAF-4285A801D857}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20191EEC-2A6F-4081-9FAF-4285A801D857}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF302BBB-68F7-4D21-9050-2E0354D614F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF302BBB-68F7-4D21-9050-2E0354D614F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF302BBB-68F7-4D21-9050-2E0354D614F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF302BBB-68F7-4D21-9050-2E0354D614F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

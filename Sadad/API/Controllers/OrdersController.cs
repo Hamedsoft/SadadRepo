@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
-using Application.Services;
 using Domain.Entities;
+using Application.Queries.Orders.GetOrderById;
+using MediatR;
+using Contracts.Repositories;
 
 namespace API.Controllers
 {
@@ -12,9 +12,11 @@ namespace API.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        public OrdersController(IOrderService orderService)
+        private readonly IMediator _mediator;
+        public OrdersController(IOrderService orderService, IMediator mediator)
         {
             _orderService = orderService;
+            _mediator = mediator;
         }
         #region Post Methods
         [HttpPost]
@@ -34,17 +36,8 @@ namespace API.Controllers
             await _orderService.AddOrderAsync(newOrder);
             return Ok(newOrder);
         }
-        #region Get Methods
-        [HttpGet]
-        [Route("GetOrders")]
-        public async Task<IActionResult> GetOrders()
-        {
-            var orders = await _orderService.GetOrdersAsync();
-            return Ok(orders);
-        }
         [HttpPost]
         [Route("AddOrderItem")]
-        #endregion
         public async Task<IActionResult> AddOrderItemAsync([FromBody] AddOrderItemDto orderItem)
         {
             if (orderItem == null)
@@ -80,6 +73,27 @@ namespace API.Controllers
             await _orderService.AddOrderItemAsync(NewOrderItem);
             var DraftsOrderItems = await _orderService.GetLastOpenOrderItemsAsync(orderItem.CustomerId);
             return Ok(DraftsOrderItems.Count());
+        }
+        #endregion
+        #region Get Methods
+        [HttpGet]
+        [Route("GetOrders")]
+        public async Task<IActionResult> GetOrders()
+        {
+            var orders = await _orderService.GetOrdersAsync();
+            return Ok(orders);
+        }
+        [HttpGet]
+        [Route("GetOrdersCQRS/{OrderId}")]
+        public async Task<IActionResult> GetOrdersCQRS(int OrderId)
+        {
+            var query = new GetOrderByIdQuery(OrderId);  // ساختن یک Query
+            var order = await _mediator.Send(query);  // ارسال Query از طریق MediatR
+
+            if (order == null)
+                return NotFound();
+
+            return Ok(order);
         }
         [HttpGet]
         [Route("GetOrderItems/{Order}")]

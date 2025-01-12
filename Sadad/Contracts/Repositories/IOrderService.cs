@@ -1,12 +1,12 @@
 ﻿using Shared.DTOs;
 using Domain.Entities;
 
-namespace Application.Services
+namespace Contracts.Repositories
 {
     public interface IOrderService
     {
         #region Post Interfaces
-        Task AddOrderAsync (Order order);
+        Task AddOrderAsync(Order order);
         Task AddOrderItemAsync(OrderItem orderitem);
         #endregion
         #region Get Interfaces

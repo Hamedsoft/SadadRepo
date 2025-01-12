@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 using Shared.DTOs;
 
-namespace Infrastructure.Repositories
+namespace Contracts.Repositories
 {
     public interface IOrderRepository
     {

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Contracts.Repositories;
+using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs;
