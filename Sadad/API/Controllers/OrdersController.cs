@@ -8,6 +8,7 @@ using Application.Queries.Orders.GetAllOrders;
 using Application.Queries.Orders.GetOrderGroupItems;
 using Application.Queries.Orders.GetProducts;
 using Application.Queries.Orders.GetLastOpenOrderItems;
+using Application.Commands.Orders.CreateOrder;
 
 namespace API.Controllers
 {
@@ -23,10 +24,10 @@ namespace API.Controllers
             _mediator = mediator;
         }
         #region Post Methods
-        
+
         [HttpPost]
-        [Route("AddOrder")]
-        public async Task<IActionResult> AddOrder([FromBody] OrderDto order)
+        [Route("AddOrderNormal")] //Remove This
+        public async Task<IActionResult> AddOrderNormal([FromBody] OrderDto order)
         {
             if (order == null)
             {
@@ -41,7 +42,20 @@ namespace API.Controllers
             await _orderService.AddOrderAsync(newOrder);
             return Ok(newOrder);
         }
-        
+
+        [HttpPost]
+        [Route("AddOrder")] //Fixed for CQRS
+        public async Task<IActionResult> AddOrder([FromBody] OrderDto order)
+        {
+            if (order == null)
+            {
+                return BadRequest("Invalid order data.");
+            }
+            var command = new CreateOrderCommand(customer: order.Customer, subTotal: order.SubTotal, status: order.Status);
+            Order Model = await _mediator.Send(command);
+            return Ok(Model);
+        }
+
         [HttpPost]
         [Route("AddOrderItem")]
         public async Task<IActionResult> AddOrderItemAsync([FromBody] AddOrderItemDto orderItem)
@@ -82,7 +96,7 @@ namespace API.Controllers
         }
         #endregion
         #region Get Methods
-        
+
         [HttpGet]
         [Route("GetOrdersNormal")]  //Remove This
         public async Task<IActionResult> GetOrdersNormal()
@@ -90,7 +104,7 @@ namespace API.Controllers
             var orders = await _orderService.GetOrdersAsync();
             return Ok(orders);
         }
-        
+
         [HttpGet]
         [Route("GetOrders")] //Fixed for CQRS
         public async Task<IActionResult> GetOrders()
@@ -99,7 +113,7 @@ namespace API.Controllers
             var orders = await _mediator.Send(query);  // ارسال Query از طریق MediatR
             return Ok(orders);
         }
-        
+
         [HttpGet]
         [Route("GetOrderItems/{Order}")] //Fixed for CQRS
         public async Task<IActionResult> GetOrdersCQRS(int Order = 1)
@@ -112,7 +126,7 @@ namespace API.Controllers
 
             return Ok(order);
         }
-        
+
         [HttpGet]
         [Route("GetOrderItemsNormal/{Order}")] //Remove This
         public async Task<IActionResult> GetOrderItemsNormal(int Order = 1)
@@ -120,7 +134,7 @@ namespace API.Controllers
             var OrderItems = await _orderService.GetOrderItemsAsync(Order);
             return Ok(OrderItems);
         }
-        
+
         [HttpGet]
         [Route("GetOrderGroupItemsNormal/{CustomerId}")] //Remove This
         public async Task<IActionResult> GetOrderGroupItemsNormal(int CustomerId = 1)
@@ -203,7 +217,7 @@ namespace API.Controllers
         }
         #endregion
         #region Update Methods
-        
+
         [HttpPut]
         [Route("CommitOrder")]
         public async Task<IActionResult> CommitOrder([FromBody] CommitOrderDto orderInfo)
