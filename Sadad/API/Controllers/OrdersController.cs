@@ -11,6 +11,7 @@ using Application.Queries.Orders.GetLastOpenOrderItems;
 using Application.Commands.Orders.AddOrder;
 using Application.Commands.Orders.AddOrderItem;
 using Application.Commands.Orders.RemoveOrderItems;
+using Application.Commands.Orders.CommitOrder;
 
 namespace API.Controllers
 {
@@ -196,14 +197,16 @@ namespace API.Controllers
         #region Update Methods
 
         [HttpPut]
-        [Route("CommitOrder")]
+        [Route("CommitOrder")] //Fixed for CQRS
         public async Task<IActionResult> CommitOrder([FromBody] CommitOrderDto orderInfo)
         {
             if (orderInfo == null)
             {
                 return BadRequest("Invalid order data.");
             }
-            await _orderService.CommitOrder(orderInfo.OrderId);
+
+            var query = new CommitOrderCommand(orderInfo.OrderId);  // ساختن یک Query
+            await _mediator.Send(query);  // ارسال Query از طریق MediatR
             return Ok();
         }
         #endregion
