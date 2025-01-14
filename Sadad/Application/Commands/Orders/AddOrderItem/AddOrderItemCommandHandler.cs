@@ -1,14 +1,6 @@
-﻿using Application.Commands.Orders.AddOrder;
-using Application.Interfaces;
-using Application.Services;
+﻿using Application.Interfaces;
 using Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Commands.Orders.AddOrderItem
 {

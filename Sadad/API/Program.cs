@@ -1,6 +1,4 @@
-using Application.Extensions;
 using Application.Queries.Orders.GetAllOrders;
-using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Infrastructure.Extensions;
 using MediatR;
@@ -13,7 +11,6 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 // Register Application & Infrastructure Services
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructure(connectionString);
 
 // MediatR
