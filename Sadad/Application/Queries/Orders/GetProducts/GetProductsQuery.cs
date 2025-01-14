@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Shared.DTOs;
+using Application.DTOs;
 
 namespace Application.Queries.Orders.GetProducts
 {

@@ -2,7 +2,7 @@
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Shared.DTOs;
+using Application.DTOs;
 
 
 namespace Infrastructure.Repositories

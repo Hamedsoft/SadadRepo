@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
-using Shared.DTOs;
+using Application.DTOs;
 
 namespace Application.Services
 {

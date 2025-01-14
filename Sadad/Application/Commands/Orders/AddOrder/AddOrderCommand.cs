@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 using MediatR;
-using Shared.DTOs;
+using Application.DTOs;
 
 namespace Application.Commands.Orders.AddOrder
 {

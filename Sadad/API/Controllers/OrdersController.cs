@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs;
+using Application.DTOs;
 using Domain.Entities;
 using Application.Queries.Orders.GetOrderById;
 using MediatR;

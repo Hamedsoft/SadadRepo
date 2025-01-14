@@ -1,4 +1,4 @@
-﻿using Shared.DTOs;
+﻿using Application.DTOs;
 
 namespace UI.Services
 {
