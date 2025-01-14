@@ -10,6 +10,7 @@ using Application.Queries.Orders.GetProducts;
 using Application.Queries.Orders.GetLastOpenOrderItems;
 using Application.Commands.Orders.AddOrder;
 using Application.Commands.Orders.AddOrderItem;
+using Application.Commands.Orders.RemoveOrderItems;
 
 namespace API.Controllers
 {
@@ -176,7 +177,7 @@ namespace API.Controllers
         #region Delete Methods
 
         [HttpDelete]
-        [Route("RemoveOrderItems")]
+        [Route("RemoveOrderItems")] //Fixed for CQRS
         public async Task<IActionResult> RemoveOrderItemAsync([FromBody] DeleteOrderItemDto orderItem)
         {
             if (orderItem == null)
@@ -187,7 +188,8 @@ namespace API.Controllers
             int OrderId = orderItem.OrderId;
             int ProductId = orderItem.ProductId;
 
-            await _orderService.DeleteOrderItems(OrderId, ProductId);
+            var query = new RemoveOrderItemsCommand(OrderId, ProductId);  // ساختن یک Query
+            await _mediator.Send(query);  // ارسال Query از طریق MediatR
             return Ok();
         }
         #endregion

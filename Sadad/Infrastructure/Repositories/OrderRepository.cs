@@ -128,9 +128,13 @@ namespace Infrastructure.Repositories
         }
         #endregion
         #region Delete Repository
+        public async Task<OrderItem> GetOrderItem(int OrderId, int ProductId)
+        {
+            return _context.OrderItems.Where(M => M.OrderId == OrderId && M.ProductId == ProductId).OrderBy(M => M.Id).LastOrDefault();
+        }
         public async Task DeleteOrderItems(int OrderId, int ProductId)
         {
-            OrderItem Item = _context.OrderItems.Where(M => M.OrderId == OrderId && M.ProductId == ProductId).OrderBy(M=>M.Id).LastOrDefault();
+            OrderItem Item = await GetOrderItem(OrderId, ProductId);
             _context.OrderItems.Remove(Item);
 
             Order order = _context.Orders.Where(R => R.Id == Item.OrderId).FirstOrDefault();

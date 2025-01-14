@@ -17,6 +17,7 @@ namespace Application.Interfaces
         Task<List<OrderItemDto>> GetLastOpenOrderItemsAsync(int CustomerId);
         Task<List<OrderListGroupDto>> GetOrderItemsGroupAsync(int Customerid);
         Task<Order> GetLastOpenOrderAsync(int CustomerId);
+        Task<OrderItem> GetOrderItem(int OrderId, int ProductId);
         #endregion
         #region Delete Interfaces
         Task DeleteOrderItems(int OrderId, int ProductId);
