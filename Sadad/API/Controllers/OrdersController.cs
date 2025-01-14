@@ -29,24 +29,6 @@ namespace API.Controllers
         #region Post Methods
 
         [HttpPost]
-        [Route("AddOrderNormal")] //Remove This
-        public async Task<IActionResult> AddOrderNormal([FromBody] OrderDto order)
-        {
-            if (order == null)
-            {
-                return BadRequest("Invalid order data.");
-            }
-            var newOrder = new Order
-            {
-                Customer = order.Customer,
-                SubTotal = order.SubTotal,
-                Status = order.Status
-            };
-            await _orderService.AddOrderAsync(newOrder);
-            return Ok(newOrder);
-        }
-
-        [HttpPost]
         [Route("AddOrder")] //Fixed for CQRS
         public async Task<IActionResult> AddOrder([FromBody] OrderDto order)
         {
@@ -75,14 +57,6 @@ namespace API.Controllers
         #region Get Methods
 
         [HttpGet]
-        [Route("GetOrdersNormal")]  //Remove This
-        public async Task<IActionResult> GetOrdersNormal()
-        {
-            var orders = await _orderService.GetOrdersAsync();
-            return Ok(orders);
-        }
-
-        [HttpGet]
         [Route("GetOrders")] //Fixed for CQRS
         public async Task<IActionResult> GetOrders()
         {
@@ -105,22 +79,6 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("GetOrderItemsNormal/{Order}")] //Remove This
-        public async Task<IActionResult> GetOrderItemsNormal(int Order = 1)
-        {
-            var OrderItems = await _orderService.GetOrderItemsAsync(Order);
-            return Ok(OrderItems);
-        }
-
-        [HttpGet]
-        [Route("GetOrderGroupItemsNormal/{CustomerId}")] //Remove This
-        public async Task<IActionResult> GetOrderGroupItemsNormal(int CustomerId = 1)
-        {
-            var OrderItems = await _orderService.GetOrderItemsGroupAsync(CustomerId);
-            return Ok(OrderItems);
-        }
-
-        [HttpGet]
         [Route("GetOrderGroupItems/{CustomerId}")] //Fixed for CQRS
         public async Task<IActionResult> GetOrderGroupItems(int CustomerId = 1)
         {
@@ -134,14 +92,6 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("GetProductsNormal")] //Remove This
-        public async Task<IActionResult> GetProductsNormal()
-        {
-            var products = await _orderService.GetAllProductAsync();
-            return Ok(products);
-        }
-
-        [HttpGet]
         [Route("GetProducts")] //Fixed for CQRS
         public async Task<IActionResult> GetProducts()
         {
@@ -152,14 +102,6 @@ namespace API.Controllers
                 return NotFound();
 
             return Ok(response);
-        }
-
-        [HttpGet] 
-        [Route("GetLastOpenOrderItemsNormal/{CustomerId}")] //Remove This
-        public async Task<IActionResult> GetLastOpenOrderItemsNormal(int CustomerId = 1)
-        {
-            var products = await _orderService.GetLastOpenOrderItemsAsync(CustomerId);
-            return Ok(products);
         }
 
         [HttpGet]
