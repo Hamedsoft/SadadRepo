@@ -19,17 +19,15 @@ namespace API.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly IOrderService _orderService;
         private readonly IMediator _mediator;
-        public OrdersController(IOrderService orderService, IMediator mediator)
+        public OrdersController(IMediator mediator)
         {
-            _orderService = orderService;
             _mediator = mediator;
         }
         #region Post Methods
 
         [HttpPost]
-        [Route("AddOrder")] //Fixed for CQRS
+        [Route("AddOrder")]
         public async Task<IActionResult> AddOrder([FromBody] OrderDto order)
         {
             if (order == null)
@@ -42,7 +40,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Route("AddOrderItem")]  //Fixed for CQRS
+        [Route("AddOrderItem")] 
         public async Task<IActionResult> AddOrderItemAsync([FromBody] AddOrderItemDto orderItem)
         {
             if (orderItem == null)
@@ -57,7 +55,7 @@ namespace API.Controllers
         #region Get Methods
 
         [HttpGet]
-        [Route("GetOrders")] //Fixed for CQRS
+        [Route("GetOrders")]
         public async Task<IActionResult> GetOrders()
         {
             var query = new GetAllOrdersQuery();  // ساختن یک Query
@@ -66,7 +64,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("GetOrderItems/{Order}")] //Fixed for CQRS
+        [Route("GetOrderItems/{Order}")]
         public async Task<IActionResult> GetOrdersCQRS(int Order = 1)
         {
             var query = new GetOrderByIdQuery(Order);  // ساختن یک Query
@@ -79,7 +77,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("GetOrderGroupItems/{CustomerId}")] //Fixed for CQRS
+        [Route("GetOrderGroupItems/{CustomerId}")]
         public async Task<IActionResult> GetOrderGroupItems(int CustomerId = 1)
         {
             var query = new GetOrderGroupItemsQuery(CustomerId);  // ساختن یک Query
@@ -92,7 +90,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("GetProducts")] //Fixed for CQRS
+        [Route("GetProducts")]
         public async Task<IActionResult> GetProducts()
         {
             var query = new GetProductsQuery();  // ساختن یک Query
@@ -105,7 +103,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("GetLastOpenOrderItems/{CustomerId}")] //Fixed for CQRS
+        [Route("GetLastOpenOrderItems/{CustomerId}")]
         public async Task<IActionResult> GetLastOpenOrderItems(int CustomerId = 1)
         {
             var query = new GetLastOpenOrderItemsQuery(CustomerId);  // ساختن یک Query
@@ -120,7 +118,7 @@ namespace API.Controllers
         #region Delete Methods
 
         [HttpDelete]
-        [Route("RemoveOrderItems")] //Fixed for CQRS
+        [Route("RemoveOrderItems")]
         public async Task<IActionResult> RemoveOrderItemAsync([FromBody] DeleteOrderItemDto orderItem)
         {
             if (orderItem == null)
@@ -139,7 +137,7 @@ namespace API.Controllers
         #region Update Methods
 
         [HttpPut]
-        [Route("CommitOrder")] //Fixed for CQRS
+        [Route("CommitOrder")]
         public async Task<IActionResult> CommitOrder([FromBody] CommitOrderDto orderInfo)
         {
             if (orderInfo == null)

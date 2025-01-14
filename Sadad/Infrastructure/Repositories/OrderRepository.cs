@@ -119,12 +119,10 @@ namespace Infrastructure.Repositories
         }
         public async Task<Order> GetLastOpenOrderAsync(int CustomerId)
         {
-            Order result = new Order();
-            var order = await _context.Orders
+            return await _context.Orders
                               .Where(O => O.Status == 0 && O.Customer == CustomerId)
                               .OrderBy(O => O.Id)
                               .LastOrDefaultAsync();
-            return order == null ? result : order;
         }
         #endregion
         #region Delete Repository

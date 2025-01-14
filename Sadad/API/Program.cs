@@ -3,7 +3,6 @@ using Application.Queries.Orders.GetAllOrders;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Infrastructure.Extensions;
-using Infrastructure.IoC;
 using MediatR;
 using System.Reflection;
 
@@ -20,12 +19,6 @@ builder.Services.AddInfrastructure(connectionString);
 // MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetAllOrdersQueryHandler>());
-
-// Configure Autofac Module
-builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
-{
-    containerBuilder.RegisterModule(new InfrastructureModule());
-});
 
 // Add services to the container.
 builder.Services.AddControllers();
