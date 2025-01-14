@@ -11,10 +11,11 @@ namespace Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context;
         #region Post Repository
-        public async Task AddOrderAsync(Order order)
+        public async Task<Order> AddOrderAsync(Order order)
         {
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
+            return order;
         }
         public async Task AddOrderItemAsync(OrderItem orderitem)
         {
@@ -114,6 +115,15 @@ namespace Infrastructure.Repositories
                                   ProductId = oi.ProductId,
                                   ProductName = oi.Product.Name
                               }).ToListAsync();
+            return order == null ? result : order;
+        }
+        public async Task<Order> GetLastOpenOrderAsync(int CustomerId)
+        {
+            Order result = new Order();
+            var order = await _context.Orders
+                              .Where(O => O.Status == 0 && O.Customer == CustomerId)
+                              .OrderBy(O => O.Id)
+                              .LastOrDefaultAsync();
             return order == null ? result : order;
         }
         #endregion

@@ -6,7 +6,7 @@ namespace Application.Interfaces
     public interface IOrderRepository
     {
         #region Post Interfaces
-        Task AddOrderAsync(Order order);
+        Task<Order> AddOrderAsync(Order order);
         Task AddOrderItemAsync(OrderItem orderitem);
         #endregion
         #region Get Interfaces
@@ -16,6 +16,7 @@ namespace Application.Interfaces
         Task<ProductDto> GetProductAsync(int ProductId);
         Task<List<OrderItemDto>> GetLastOpenOrderItemsAsync(int CustomerId);
         Task<List<OrderListGroupDto>> GetOrderItemsGroupAsync(int Customerid);
+        Task<Order> GetLastOpenOrderAsync(int CustomerId);
         #endregion
         #region Delete Interfaces
         Task DeleteOrderItems(int OrderId, int ProductId);

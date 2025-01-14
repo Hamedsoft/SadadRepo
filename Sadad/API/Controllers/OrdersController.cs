@@ -9,6 +9,7 @@ using Application.Queries.Orders.GetOrderGroupItems;
 using Application.Queries.Orders.GetProducts;
 using Application.Queries.Orders.GetLastOpenOrderItems;
 using Application.Commands.Orders.CreateOrder;
+using Application.Commands.Orders.AddOrderItem;
 
 namespace API.Controllers
 {
@@ -64,35 +65,38 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid order data.");
             }
+            var command = new AddOrderItemCommand(customerId : orderItem.CustomerId, quantity : 1, productId : orderItem.ProductId);
+            int DraftOrderItems = await _mediator.Send(command);
+            return Ok(DraftOrderItems);
 
-            int OrderId;
-            var LastDraftsOrder = await _orderService.GetLastOpenOrderItemsAsync(orderItem.CustomerId);
-            if (LastDraftsOrder.Count() == 0)
-            {
-                var newOrder = new Order
-                {
-                    Customer = orderItem.CustomerId,
-                    SubTotal = 0,
-                    Status = 0
-                };
-                await _orderService.AddOrderAsync(newOrder);
-                OrderId = newOrder.Id;
-            }
-            else
-            {
-                OrderId = LastDraftsOrder.Select(oi => oi.OrderId).FirstOrDefault();
-            }
-            ProductDto ProductInfo = await _orderService.GetProductAsync(orderItem.ProductId);
-            OrderItem NewOrderItem = new OrderItem
-            {
-                OrderId = OrderId,
-                Quantity = 1,
-                Price = ProductInfo.Price,
-                ProductId = orderItem.ProductId
-            };
-            await _orderService.AddOrderItemAsync(NewOrderItem);
-            var DraftsOrderItems = await _orderService.GetLastOpenOrderItemsAsync(orderItem.CustomerId);
-            return Ok(DraftsOrderItems.Count());
+            //int OrderId;
+            //var LastDraftsOrder = await _orderService.GetLastOpenOrderItemsAsync(orderItem.CustomerId);
+            //if (LastDraftsOrder.Count() == 0)
+            //{
+            //    var newOrder = new Order
+            //    {
+            //        Customer = orderItem.CustomerId,
+            //        SubTotal = 0,
+            //        Status = 0
+            //    };
+            //    await _orderService.AddOrderAsync(newOrder);
+            //    OrderId = newOrder.Id;
+            //}
+            //else
+            //{
+            //    OrderId = LastDraftsOrder.Select(oi => oi.OrderId).FirstOrDefault();
+            //}
+            //ProductDto ProductInfo = await _orderService.GetProductAsync(orderItem.ProductId);
+            //OrderItem NewOrderItem = new OrderItem
+            //{
+            //    OrderId = OrderId,
+            //    Quantity = 1,
+            //    Price = ProductInfo.Price,
+            //    ProductId = orderItem.ProductId
+            //};
+            //await _orderService.AddOrderItemAsync(NewOrderItem);
+            //var DraftsOrderItems = await _orderService.GetLastOpenOrderItemsAsync(orderItem.CustomerId);
+            //return Ok(DraftsOrderItems.Count());
         }
         #endregion
         #region Get Methods
