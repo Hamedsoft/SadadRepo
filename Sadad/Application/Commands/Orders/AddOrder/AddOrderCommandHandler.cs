@@ -2,17 +2,17 @@
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Commands.Orders.CreateOrder
+namespace Application.Commands.Orders.AddOrder
 {
-    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Order>
+    public class AddOrderCommandHandler : IRequestHandler<AddOrderCommand, Order>
     {
         private readonly IOrderRepository _orderRepository;
 
-        public CreateOrderCommandHandler(IOrderRepository orderRepository)
+        public AddOrderCommandHandler(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
         }
-        public async Task<Order> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<Order> Handle(AddOrderCommand request, CancellationToken cancellationToken)
         {
             var order = new Order
             {

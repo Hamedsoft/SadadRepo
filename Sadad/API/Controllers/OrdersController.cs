@@ -8,7 +8,7 @@ using Application.Queries.Orders.GetAllOrders;
 using Application.Queries.Orders.GetOrderGroupItems;
 using Application.Queries.Orders.GetProducts;
 using Application.Queries.Orders.GetLastOpenOrderItems;
-using Application.Commands.Orders.CreateOrder;
+using Application.Commands.Orders.AddOrder;
 using Application.Commands.Orders.AddOrderItem;
 
 namespace API.Controllers
@@ -52,13 +52,13 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid order data.");
             }
-            var command = new CreateOrderCommand(customer: order.Customer, subTotal: order.SubTotal, status: order.Status);
+            var command = new AddOrderCommand(customer: order.Customer, subTotal: order.SubTotal, status: order.Status);
             Order Model = await _mediator.Send(command);
             return Ok(Model);
         }
 
         [HttpPost]
-        [Route("AddOrderItem")]
+        [Route("AddOrderItem")]  //Fixed for CQRS
         public async Task<IActionResult> AddOrderItemAsync([FromBody] AddOrderItemDto orderItem)
         {
             if (orderItem == null)
@@ -68,35 +68,6 @@ namespace API.Controllers
             var command = new AddOrderItemCommand(customerId : orderItem.CustomerId, quantity : 1, productId : orderItem.ProductId);
             int DraftOrderItems = await _mediator.Send(command);
             return Ok(DraftOrderItems);
-
-            //int OrderId;
-            //var LastDraftsOrder = await _orderService.GetLastOpenOrderItemsAsync(orderItem.CustomerId);
-            //if (LastDraftsOrder.Count() == 0)
-            //{
-            //    var newOrder = new Order
-            //    {
-            //        Customer = orderItem.CustomerId,
-            //        SubTotal = 0,
-            //        Status = 0
-            //    };
-            //    await _orderService.AddOrderAsync(newOrder);
-            //    OrderId = newOrder.Id;
-            //}
-            //else
-            //{
-            //    OrderId = LastDraftsOrder.Select(oi => oi.OrderId).FirstOrDefault();
-            //}
-            //ProductDto ProductInfo = await _orderService.GetProductAsync(orderItem.ProductId);
-            //OrderItem NewOrderItem = new OrderItem
-            //{
-            //    OrderId = OrderId,
-            //    Quantity = 1,
-            //    Price = ProductInfo.Price,
-            //    ProductId = orderItem.ProductId
-            //};
-            //await _orderService.AddOrderItemAsync(NewOrderItem);
-            //var DraftsOrderItems = await _orderService.GetLastOpenOrderItemsAsync(orderItem.CustomerId);
-            //return Ok(DraftsOrderItems.Count());
         }
         #endregion
         #region Get Methods
@@ -181,16 +152,16 @@ namespace API.Controllers
             return Ok(response);
         }
 
-        [HttpGet] //Remove This
-        [Route("GetLastOpenOrderItemsNormal/{CustomerId}")]
+        [HttpGet] 
+        [Route("GetLastOpenOrderItemsNormal/{CustomerId}")] //Remove This
         public async Task<IActionResult> GetLastOpenOrderItemsNormal(int CustomerId = 1)
         {
             var products = await _orderService.GetLastOpenOrderItemsAsync(CustomerId);
             return Ok(products);
         }
 
-        [HttpGet] //Fixed for CQRS
-        [Route("GetLastOpenOrderItems/{CustomerId}")]
+        [HttpGet]
+        [Route("GetLastOpenOrderItems/{CustomerId}")] //Fixed for CQRS
         public async Task<IActionResult> GetLastOpenOrderItems(int CustomerId = 1)
         {
             var query = new GetLastOpenOrderItemsQuery(CustomerId);  // ساختن یک Query
