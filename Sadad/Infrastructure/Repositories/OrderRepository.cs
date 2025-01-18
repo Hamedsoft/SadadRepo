@@ -3,7 +3,8 @@ using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Application.DTOs;
-
+using Application.Exceptions;
+using Domain.Enums;
 
 namespace Infrastructure.Repositories
 {
@@ -136,6 +137,9 @@ namespace Infrastructure.Repositories
             _context.OrderItems.Remove(Item);
 
             Order order = _context.Orders.Where(R => R.Id == Item.OrderId).FirstOrDefault();
+            if(order == null)
+                throw new CustomException(ErrorCode.InvalidOrderId);
+
             List<OrderItemDto> OrderItems = await GetLastOpenOrderItemsAsync(order.Customer);
             if (OrderItems.Count() == 0)
                 _context.Orders.Remove(order);
@@ -147,12 +151,12 @@ namespace Infrastructure.Repositories
         #region Update Repository
         public async Task CommitOrder(int OrderId)
         {
-            Order Item = _context.Orders.Where(M => M.Id == OrderId ).FirstOrDefault();
-            if (Item != null)
-            {
-                Item.Status = 1;
-                await _context.SaveChangesAsync();
-            }
+            Order Item = _context.Orders.Where(M => M.Id == OrderId).FirstOrDefault();
+            if (Item == null)
+                throw new CustomException(ErrorCode.ModelIsNull);
+
+            Item.Status = 1;
+            await _context.SaveChangesAsync();
         }
         #endregion
     }

@@ -1,5 +1,7 @@
-﻿using Application.Interfaces;
+﻿using Application.Exceptions;
+using Application.Interfaces;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.Commands.Orders.AddOrderItem
@@ -27,7 +29,7 @@ namespace Application.Commands.Orders.AddOrderItem
             }
             var ProductInfo = await _orderRepository.GetProductAsync(request.ProductId);
             if(ProductInfo == null)
-                return -1;
+                throw new CustomException(ErrorCode.InvalidProductId);
             var orderitem = new OrderItem
             {
                 OrderId = lastDraftOrder.Id,
@@ -38,7 +40,7 @@ namespace Application.Commands.Orders.AddOrderItem
             await _orderRepository.AddOrderItemAsync(orderitem);
             var OrderInfo = await _orderRepository.GetOrderItemsAsync(orderitem.OrderId);
             if (OrderInfo.OrderItem == null)
-                return -1;
+                throw new CustomException(ErrorCode.InvalidOrderId);
             return OrderInfo.OrderItem.Count();   
         }
     }
