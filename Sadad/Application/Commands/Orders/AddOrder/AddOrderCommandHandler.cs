@@ -1,5 +1,7 @@
-﻿using Application.Interfaces;
+﻿using Application.Exceptions;
+using Application.Interfaces;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.Commands.Orders.AddOrder
@@ -14,6 +16,10 @@ namespace Application.Commands.Orders.AddOrder
         }
         public async Task<Order> Handle(AddOrderCommand request, CancellationToken cancellationToken)
         {
+            if (request.Status != 0)
+            {
+                throw new CustomException(ErrorCode.InvalidOrderStatus);
+            }
             var order = new Order
             {
                 Customer = request.Customer,

@@ -12,6 +12,8 @@ using Application.Commands.Orders.AddOrder;
 using Application.Commands.Orders.AddOrderItem;
 using Application.Commands.Orders.RemoveOrderItems;
 using Application.Commands.Orders.CommitOrder;
+using Application.Exceptions;
+using Domain.Enums;
 
 namespace API.Controllers
 {
@@ -32,7 +34,7 @@ namespace API.Controllers
         {
             if (order == null)
             {
-                return BadRequest("Invalid order data.");
+                throw new CustomException(ErrorCode.ModelIsNull);
             }
             var command = new AddOrderCommand(customer: order.Customer, subTotal: order.SubTotal, status: order.Status);
             Order Model = await _mediator.Send(command);
@@ -40,14 +42,14 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Route("AddOrderItem")] 
+        [Route("AddOrderItem")]
         public async Task<IActionResult> AddOrderItemAsync([FromBody] AddOrderItemDto orderItem)
         {
             if (orderItem == null)
             {
-                return BadRequest("Invalid order data.");
+                throw new CustomException(ErrorCode.ModelIsNull);
             }
-            var command = new AddOrderItemCommand(customerId : orderItem.CustomerId, quantity : 1, productId : orderItem.ProductId);
+            var command = new AddOrderItemCommand(customerId: orderItem.CustomerId, quantity: 1, productId: orderItem.ProductId);
             int DraftOrderItems = await _mediator.Send(command);
             return Ok(DraftOrderItems);
         }
@@ -58,8 +60,10 @@ namespace API.Controllers
         [Route("GetOrders")]
         public async Task<IActionResult> GetOrders()
         {
-            var query = new GetAllOrdersQuery();  // ساختن یک Query
-            var orders = await _mediator.Send(query);  // ارسال Query از طریق MediatR
+            var query = new GetAllOrdersQuery();
+            var orders = await _mediator.Send(query);
+            if (orders == null)
+                throw new CustomException(ErrorCode.ModelIsNull);
             return Ok(orders);
         }
 
@@ -67,11 +71,11 @@ namespace API.Controllers
         [Route("GetOrderItems/{Order}")]
         public async Task<IActionResult> GetOrdersCQRS(int Order = 1)
         {
-            var query = new GetOrderByIdQuery(Order);  // ساختن یک Query
-            var order = await _mediator.Send(query);  // ارسال Query از طریق MediatR
+            var query = new GetOrderByIdQuery(Order);
+            var order = await _mediator.Send(query);
 
             if (order == null)
-                return NotFound();
+                throw new CustomException(ErrorCode.ModelIsNull);
 
             return Ok(order);
         }
@@ -80,11 +84,11 @@ namespace API.Controllers
         [Route("GetOrderGroupItems/{CustomerId}")]
         public async Task<IActionResult> GetOrderGroupItems(int CustomerId = 1)
         {
-            var query = new GetOrderGroupItemsQuery(CustomerId);  // ساختن یک Query
-            var response = await _mediator.Send(query);  // ارسال Query از طریق MediatR
+            var query = new GetOrderGroupItemsQuery(CustomerId);
+            var response = await _mediator.Send(query);
 
             if (response == null)
-                return NotFound();
+                throw new CustomException(ErrorCode.ModelIsNull);
 
             return Ok(response);
         }
@@ -93,11 +97,11 @@ namespace API.Controllers
         [Route("GetProducts")]
         public async Task<IActionResult> GetProducts()
         {
-            var query = new GetProductsQuery();  // ساختن یک Query
-            var response = await _mediator.Send(query);  // ارسال Query از طریق MediatR
+            var query = new GetProductsQuery();
+            var response = await _mediator.Send(query);
 
             if (response == null)
-                return NotFound();
+                throw new CustomException(ErrorCode.ModelIsNull);
 
             return Ok(response);
         }
@@ -106,11 +110,11 @@ namespace API.Controllers
         [Route("GetLastOpenOrderItems/{CustomerId}")]
         public async Task<IActionResult> GetLastOpenOrderItems(int CustomerId = 1)
         {
-            var query = new GetLastOpenOrderItemsQuery(CustomerId);  // ساختن یک Query
-            var response = await _mediator.Send(query);  // ارسال Query از طریق MediatR
+            var query = new GetLastOpenOrderItemsQuery(CustomerId);
+            var response = await _mediator.Send(query);
 
             if (response == null)
-                return NotFound();
+                throw new CustomException(ErrorCode.ModelIsNull);
 
             return Ok(response);
         }
@@ -123,14 +127,14 @@ namespace API.Controllers
         {
             if (orderItem == null)
             {
-                return BadRequest("Invalid order data.");
+                throw new CustomException(ErrorCode.ModelIsNull);
             }
 
             int OrderId = orderItem.OrderId;
             int ProductId = orderItem.ProductId;
 
-            var query = new RemoveOrderItemsCommand(OrderId, ProductId);  // ساختن یک Query
-            await _mediator.Send(query);  // ارسال Query از طریق MediatR
+            var query = new RemoveOrderItemsCommand(OrderId, ProductId);
+            await _mediator.Send(query);
             return Ok();
         }
         #endregion
@@ -142,11 +146,11 @@ namespace API.Controllers
         {
             if (orderInfo == null)
             {
-                return BadRequest("Invalid order data.");
+                throw new CustomException(ErrorCode.ModelIsNull);
             }
 
-            var query = new CommitOrderCommand(orderInfo.OrderId);  // ساختن یک Query
-            await _mediator.Send(query);  // ارسال Query از طریق MediatR
+            var query = new CommitOrderCommand(orderInfo.OrderId);
+            await _mediator.Send(query);
             return Ok();
         }
         #endregion

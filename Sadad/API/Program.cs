@@ -2,9 +2,8 @@
 using Autofac.Extensions.DependencyInjection;
 using Infrastructure.Extensions;
 using MediatR;
-using Ocelot.DependencyInjection;
-using Ocelot.Middleware;
 using System.Reflection;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +38,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 //app.UseOcelot().Wait();
