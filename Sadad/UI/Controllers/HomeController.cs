@@ -28,7 +28,11 @@ namespace UI.Controllers
         public async Task<ActionResult> Products()
         {
             var products = await _orderService.GetProducts();
-            if (products == null || !products.Any()) return View("Error");
+            if (products == null || !products.Any())
+            {
+                ViewData["ErrorDesc"] = "محصولی یافت نشد! لطفا ارتباط خود را با پایگاه داده چک کنید.";
+                return View("Error");
+            }
 
             var draftOrderItems = await _orderService.GetLastOpenOrderItems(1);
             ViewData["OpenOrderCount"] = draftOrderItems.Count();
