@@ -1,28 +1,31 @@
-using API.Data;
-using API.Repositories;
-using API.Services;
-using Autofac;
+﻿using Application.Queries.Orders.GetAllOrders;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+using Infrastructure.Extensions;
+using MediatR;
+using System.Reflection;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Change IoC to Autofac
+// Autofac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
-// Database Connection
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// connection String
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddInfrastructure(connectionString);
 
-// Services DI
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IOrderService, OrderService>();
+// MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetAllOrdersQueryHandler>());
 
 // Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// ocelot
+//builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+//builder.Services.AddOcelot();
 
 var app = builder.Build();
 
@@ -31,13 +34,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>{c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sadad API");});
 }
 
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthorization();
-
 app.MapControllers();
+//app.UseOcelot().Wait();
 
 app.Run();

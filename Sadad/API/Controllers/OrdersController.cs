@@ -1,10 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using API.DTOs;
-using API.Models;
-using API.Repositories;
-using API.Services;
+﻿using Microsoft.AspNetCore.Mvc;
+using Application.DTOs;
+using Domain.Entities;
+using Application.Queries.Orders.GetOrderById;
+using MediatR;
+using Application.Interfaces;
+using Application.Queries.Orders.GetAllOrders;
+using Application.Queries.Orders.GetOrderGroupItems;
+using Application.Queries.Orders.GetProducts;
+using Application.Queries.Orders.GetLastOpenOrderItems;
+using Application.Commands.Orders.AddOrder;
+using Application.Commands.Orders.AddOrderItem;
+using Application.Commands.Orders.RemoveOrderItems;
+using Application.Commands.Orders.CommitOrder;
+using Application.Exceptions;
+using Domain.Enums;
 
 namespace API.Controllers
 {
@@ -12,132 +21,136 @@ namespace API.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly IOrderService _orderService;
-        public OrdersController(IOrderService orderService)
+        private readonly IMediator _mediator;
+        public OrdersController(IMediator mediator)
         {
-            _orderService = orderService;
+            _mediator = mediator;
         }
         #region Post Methods
+
         [HttpPost]
         [Route("AddOrder")]
         public async Task<IActionResult> AddOrder([FromBody] OrderDto order)
         {
             if (order == null)
             {
-                return BadRequest("Invalid order data.");
+                throw new CustomException(ErrorCode.ModelIsNull);
             }
-            var newOrder = new Order
-            {
-                Customer = order.Customer,
-                SubTotal = order.SubTotal,
-                Status = order.Status
-            };
-            await _orderService.AddOrderAsync(newOrder);
-            return Ok(newOrder);
+            var command = new AddOrderCommand(customer: order.Customer, subTotal: order.SubTotal, status: order.Status);
+            Order Model = await _mediator.Send(command);
+            return Ok(Model);
         }
-        #region Get Methods
-        [HttpGet]
-        [Route("GetOrders")]
-        public async Task<IActionResult> GetOrders()
-        {
-            var orders = await _orderService.GetOrdersAsync();
-            return Ok(orders);
-        }
+
         [HttpPost]
         [Route("AddOrderItem")]
-        #endregion
         public async Task<IActionResult> AddOrderItemAsync([FromBody] AddOrderItemDto orderItem)
         {
             if (orderItem == null)
             {
-                return BadRequest("Invalid order data.");
+                throw new CustomException(ErrorCode.ModelIsNull);
             }
-
-            int OrderId;
-            var LastDraftsOrder = await _orderService.GetLastOpenOrderItemsAsync(orderItem.CustomerId);
-            if (LastDraftsOrder.Count() == 0)
-            {
-                var newOrder = new Order
-                {
-                    Customer = orderItem.CustomerId,
-                    SubTotal = 0,
-                    Status = 0
-                };
-                await _orderService.AddOrderAsync(newOrder);
-                OrderId = newOrder.Id;
-            }
-            else
-            {
-                OrderId = LastDraftsOrder.Select(oi => oi.OrderId).FirstOrDefault();
-            }
-            ProductDto ProductInfo = await _orderService.GetProductAsync(orderItem.ProductId);
-            OrderItem NewOrderItem = new OrderItem
-            {
-                OrderId = OrderId,
-                Quantity = 1,
-                Price = ProductInfo.Price,
-                ProductId = orderItem.ProductId
-            };
-            await _orderService.AddOrderItemAsync(NewOrderItem);
-            var DraftsOrderItems = await _orderService.GetLastOpenOrderItemsAsync(orderItem.CustomerId);
-            return Ok(DraftsOrderItems.Count());
+            var command = new AddOrderItemCommand(customerId: orderItem.CustomerId, quantity: 1, productId: orderItem.ProductId);
+            int DraftOrderItems = await _mediator.Send(command);
+            return Ok(DraftOrderItems);
         }
+        #endregion
+        #region Get Methods
+
+        [HttpGet]
+        [Route("GetOrders")]
+        public async Task<IActionResult> GetOrders()
+        {
+            var query = new GetAllOrdersQuery();
+            var orders = await _mediator.Send(query);
+            if (orders == null)
+                throw new CustomException(ErrorCode.ModelIsNull);
+            return Ok(orders);
+        }
+
         [HttpGet]
         [Route("GetOrderItems/{Order}")]
-        public async Task<IActionResult> GetOrderItems(int Order = 1)
+        public async Task<IActionResult> GetOrdersCQRS(int Order = 1)
         {
-            var OrderItems = await _orderService.GetOrderItemsAsync(Order);
-            return Ok(OrderItems);
+            var query = new GetOrderByIdQuery(Order);
+            var order = await _mediator.Send(query);
+
+            if (order == null)
+                throw new CustomException(ErrorCode.ModelIsNull);
+
+            return Ok(order);
         }
+
         [HttpGet]
         [Route("GetOrderGroupItems/{CustomerId}")]
         public async Task<IActionResult> GetOrderGroupItems(int CustomerId = 1)
         {
-            var OrderItems = await _orderService.GetOrderItemsGroupAsync(CustomerId);
-            return Ok(OrderItems);
+            var query = new GetOrderGroupItemsQuery(CustomerId);
+            var response = await _mediator.Send(query);
+
+            if (response == null)
+                throw new CustomException(ErrorCode.ModelIsNull);
+
+            return Ok(response);
         }
+
         [HttpGet]
         [Route("GetProducts")]
         public async Task<IActionResult> GetProducts()
         {
-            var products = await _orderService.GetAllProductAsync();
-            return Ok(products);
+            var query = new GetProductsQuery();
+            var response = await _mediator.Send(query);
+
+            if (response == null)
+                throw new CustomException(ErrorCode.ModelIsNull);
+
+            return Ok(response);
         }
+
         [HttpGet]
         [Route("GetLastOpenOrderItems/{CustomerId}")]
         public async Task<IActionResult> GetLastOpenOrderItems(int CustomerId = 1)
         {
-            var products = await _orderService.GetLastOpenOrderItemsAsync(CustomerId);
-            return Ok(products);
+            var query = new GetLastOpenOrderItemsQuery(CustomerId);
+            var response = await _mediator.Send(query);
+
+            if (response == null)
+                throw new CustomException(ErrorCode.ModelIsNull);
+
+            return Ok(response);
         }
         #endregion
         #region Delete Methods
+
         [HttpDelete]
         [Route("RemoveOrderItems")]
         public async Task<IActionResult> RemoveOrderItemAsync([FromBody] DeleteOrderItemDto orderItem)
         {
             if (orderItem == null)
             {
-                return BadRequest("Invalid order data.");
+                throw new CustomException(ErrorCode.ModelIsNull);
             }
 
             int OrderId = orderItem.OrderId;
             int ProductId = orderItem.ProductId;
 
-            await _orderService.DeleteOrderItems(OrderId, ProductId);
+            var query = new RemoveOrderItemsCommand(OrderId, ProductId);
+            await _mediator.Send(query);
             return Ok();
         }
         #endregion
         #region Update Methods
+
         [HttpPut]
         [Route("CommitOrder")]
         public async Task<IActionResult> CommitOrder([FromBody] CommitOrderDto orderInfo)
         {
             if (orderInfo == null)
             {
-                return BadRequest("Invalid order data.");
+                throw new CustomException(ErrorCode.ModelIsNull);
             }
-            await _orderService.CommitOrder(orderInfo.OrderId);
+
+            var query = new CommitOrderCommand(orderInfo.OrderId);
+            await _mediator.Send(query);
             return Ok();
         }
         #endregion

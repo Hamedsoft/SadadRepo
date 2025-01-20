@@ -1,4 +1,4 @@
-﻿using API.DTOs;
+﻿using Application.DTOs;
 
 namespace UI.Services
 {
